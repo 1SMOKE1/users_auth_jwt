@@ -1,8 +1,9 @@
-import { BadRequestException, Body, Controller, HttpStatus, Post, Res } from '@nestjs/common';
-import { LoginDto } from '../dto/login.dto';
-import { Response } from 'express';
+import { BadRequestException, Body, Controller, Get, HttpStatus, Post, Req, Res } from '@nestjs/common';
+import { SignInDto } from '../dto/signIn.dto';
+import { Request, Response } from 'express';
 import { AuthService } from '../services/auth.service';
-import { IAccessToken } from '../interfaces/IAccessToken';
+import { CreateUserDto } from 'src/modules/users/dto/create-user.dto';
+import { ITokens } from '../interfaces/ITokens';
 
 @Controller('auth')
 export class AuthController {
@@ -11,17 +12,37 @@ export class AuthController {
     private readonly authService: AuthService
   ){}
 
-  @Post('login')
-  async login(
-    @Body() body: LoginDto,
+  @Post('signIn')
+  async signIn(
+    @Body() body: SignInDto,
     @Res() res: Response
   ){
     try {
-      const accessToken: IAccessToken = await this.authService.loginUser(body);
-      return res.status(HttpStatus.OK).json(accessToken);
+      const tokens: ITokens = await this.authService.signIn(body);
+      return res.status(HttpStatus.OK).json(tokens);
     } catch (err) {
       throw new BadRequestException(err);
     }
+  }
+
+  @Post('signUp')
+  async signUp(
+    @Body() body: CreateUserDto,
+    @Res() res: Response
+  ){
+    try {
+      const newUser = await this.authService.signUp(body);
+      return res.status(HttpStatus.OK).json(newUser);
+    } catch (err) {
+      throw new BadRequestException(err);
+    }
+  }
+
+  @Get('logout')
+  async logout(
+    @Req() req: Request
+  ){
+    await this.authService.logout(req.user['sub']);
   }
 
 }
