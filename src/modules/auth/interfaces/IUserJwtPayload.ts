@@ -1,12 +1,5 @@
 export interface IUserJwtPayload{
-  header: { 
-    alg: string,
-    typ: string 
-  },
-  payload: {
-    name: string;
-    sub: number;
-  }
-  signature: string
+  sub: string;
+  name: string;
 }
 

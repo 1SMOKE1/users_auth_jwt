@@ -13,9 +13,9 @@ export class UserEntity{
   password: string;
 
   @Column({type: 'varchar', nullable: true})
-  name: string;
+  name?: string;
 
   @Column({type: 'varchar', nullable: true})
-  access_token?: string
+  refresh_token?: string
 
 }
